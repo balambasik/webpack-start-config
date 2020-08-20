@@ -4,16 +4,19 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const webpack = require("webpack");
 
+const isProd = process.env.NODE_ENV || false;
+
+
 module.exports = {
     entry: './src/index.js',
     module: {
         rules: [
             {
                 test: /\.(css|less)$/,
-                use: [(process.env.NODE_ENV === "production" ? 'style-loader' : MiniCssExtractPlugin.loader), 'css-loader', 'less-loader']
+                use: [(!isProd ? 'style-loader' : MiniCssExtractPlugin.loader), 'css-loader', 'less-loader']
             },
             {
-                test: /\.m?js$/,
+                test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
@@ -44,7 +47,7 @@ module.exports = {
         //     "window.jQuery": "jquery/dist/jquery.min.js"
         // })
     ],
-    mode: process.env.NODE_ENV !== "development" ? "production" : "development",
+    mode: isProd ? "production" : "development",
     devServer: {
         hot: true,
         open: true,
