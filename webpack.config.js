@@ -12,12 +12,22 @@ module.exports = {
                 test: /\.(css|less)$/,
                 use: [(process.env.NODE_ENV === "production" ? 'style-loader' : MiniCssExtractPlugin.loader), 'css-loader', 'less-loader']
             },
-            {test: /\.(js)$/, use: 'babel-loader'}
+            {
+                test: /\.m?js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            }
         ]
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[contenthash].js'
+        filename: '[name].[contenthash].js',
+        publicPath:'/'
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -28,13 +38,13 @@ module.exports = {
             filename: '[name].[contenthash].css'
         }),
         new CleanWebpackPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery/dist/jquery.min.js",
-            jQuery: "jquery/dist/jquery.min.js",
-            "window.jQuery": "jquery/dist/jquery.min.js"
-        })
+        // new webpack.ProvidePlugin({
+        //     $: "jquery/dist/jquery.min.js",
+        //     jQuery: "jquery/dist/jquery.min.js",
+        //     "window.jQuery": "jquery/dist/jquery.min.js"
+        // })
     ],
-    mode: process.env.NODE_ENV === "production" ? "production" : "development",
+    mode: process.env.NODE_ENV !== "development" ? "production" : "development",
     devServer: {
         hot: true,
         open: true,
